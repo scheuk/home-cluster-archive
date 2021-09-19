@@ -1,6 +1,6 @@
 # Template for deploying k3s backed by Flux
 
-Template for deploying a single [k3s](https://k3s.io/) cluster with [k3sup](https://github.com/alexellis/k3sup) backed by [Flux](https://toolkit.fluxcd.io/) and [SOPS](https://toolkit.fluxcd.io/guides/mozilla-sops/).
+Highly opinionated template for deploying a single [k3s](https://k3s.io/) cluster with [k3sup](https://github.com/alexellis/k3sup) backed by [Flux](https://toolkit.fluxcd.io/) and [SOPS](https://toolkit.fluxcd.io/guides/mozilla-sops/).
 
 The purpose here is to showcase how you can deploy an entire Kubernetes cluster and show it off to the world using the [GitOps](https://www.weave.works/blog/what-is-gitops-really) tool [Flux](https://toolkit.fluxcd.io/). When completed, your Git repository will be driving the state of your Kubernetes cluster. In addition with the help of the [Flux SOPS integration](https://toolkit.fluxcd.io/guides/mozilla-sops/) you'll be able to commit GPG encrypted secrets to your public repo.
 
@@ -27,6 +27,7 @@ Feel free to read up on any of these technologies before you get started to be m
 - [traefik](https://traefik.io) - ingress controller
 - [hajimari](https://github.com/toboshii/hajimari) - start page with ingress discovery
 - [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller) - upgrade k3s
+- [reloader](https://github.com/stakater/Reloader) - restart pod when configmap or secret changes
 
 ## :memo:&nbsp; Prerequisites
 
@@ -178,7 +179,7 @@ export FLUX_KEY_FP=AB675CE4CC64251G3S9AE1DAA88ARRTY2C009E2D
 
 1. Ensure you are able to SSH into you nodes with using your private ssh key. This is how k3sup is able to connect to your remote node.
 
-2. Install the master node
+2. Install the master node(s)
 
 _We will be installing metallb instead of servicelb, traefik and metrics-server will be installed with Flux._
 
@@ -268,6 +269,7 @@ export BOOTSTRAP_GITHUB_REPOSITORY="https://github.com/k8s-at-home/home-cluster"
 # Choose one of your domains or use a made up one
 export BOOTSTRAP_DOMAIN="k8s-at-home.com"
 # Pick a range of unused IPs that are on the same network as your nodes
+# You don't need many IPs, just choose 10 to start with
 export BOOTSTRAP_METALLB_LB_RANGE="169.254.1.10-169.254.1.20"
 # The load balancer IP for traefik, choose from one of the available IPs above
 export BOOTSTRAP_SVC_TRAEFIK_ADDR="169.254.1.10"
@@ -340,6 +342,8 @@ kubectl --kubeconfig=./kubeconfig get pods -n flux-system
 ### Verify ingress
 
 If your cluster is not accessible to outside world you can update your hosts file to verify the ingress controller is working.
+
+This will only be temporary and you should set up DNS to handle these records either manually or automated with [external-dns](https://github.com/kubernetes-sigs/external-dns).
 
 ```sh
 echo "${BOOTSTRAP_SVC_TRAEFIK_ADDR} ${BOOTSTRAP_DOMAIN} hajimari.${BOOTSTRAP_DOMAIN}" | sudo tee -a /etc/hosts
