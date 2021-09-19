@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: unifi-config
+  namespace: networking
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ${NFS_STORAGECLASS_NAME}
+  resources:
+    requests:
+      storage: 10Gi
