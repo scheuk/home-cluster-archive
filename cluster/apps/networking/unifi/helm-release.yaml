@@ -30,6 +30,7 @@ spec:
         annotations:
           coredns.io/hostname: unifi
           traefik.ingress.kubernetes.io/service.serversscheme: https
+          metallb.universe.tf/allow-shared-ip: unifi-shared-ip
         type: LoadBalancer
         externalIPs:
           - ${CLUSTER_LB_UNIFI}
@@ -43,6 +44,8 @@ spec:
             enabled: false
       udp:
         enabled: true
+        annotations:
+          metallb.universe.tf/allow-shared-ip: unifi-shared-ip
         type: LoadBalancer
         externalIPs:
           - ${CLUSTER_LB_UNIFI}
