@@ -29,7 +29,6 @@ spec:
       main:
         annotations:
           coredns.io/hostname: unifi
-          traefik.ingress.kubernetes.io/service.serversscheme: https
           metallb.universe.tf/allow-shared-ip: unifi-shared-ip
         type: LoadBalancer
         externalIPs:
