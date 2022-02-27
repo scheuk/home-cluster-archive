@@ -79,7 +79,7 @@ spec:
         tls:
           - hosts:
               - "unifi.${SECRET_DOMAIN}"
-            secretName: "unifi-${SECRET_DOMAIN//./-}-tls"
+            secretName: "unifi-tls"
 
     persistence:
       data:
