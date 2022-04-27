@@ -47,7 +47,8 @@ spec:
       main:
         enabled: true
         ingressClassName: "traefik"
-        # annotations:
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
         #   nginx.ingress.kubernetes.io/configuration-snippet: |
         #     proxy_hide_header "x-webkit-csp";
         #     proxy_hide_header "content-security-policy";
@@ -63,6 +64,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: "qb-tls"
     # metrics:
     #   enabled: true
     #   exporter:
