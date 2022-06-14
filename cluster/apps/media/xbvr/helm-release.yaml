@@ -1,0 +1,73 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: xbvr
+  namespace: media
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: xbvr
+      version: 4.4.2
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+      interval: 5m
+  install:
+    createNamespace: true
+  values:
+    image:
+      repository: xbapps/xbvr
+      tag: 0.3.17
+    env:
+      TZ: "${TIMEZONE}"
+    settings:
+      automaticPortSetup: false
+    service:
+      main:
+        ports:
+          http:
+            port: 9999
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        #   nginx.ingress.kubernetes.io/configuration-snippet: |
+        #     proxy_hide_header "x-webkit-csp";
+        #     proxy_hide_header "content-security-policy";
+        #     proxy_hide_header "X-Frame-Options";
+        #     proxy_set_header Accept-Encoding "";
+        #     sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_PUBLIC_DOMAIN}/css/base/qbittorrent/nord.css"></head>';
+        #     sub_filter_once on;
+        hosts:
+          - host: &host "xbvr.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+            secretName: "qb-tls"
+    persistence:
+      config:
+        enabled: true
+        existingClaim: xbvr-config-v1
+        mountPath: /root/.config
+      video:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "192.168.1.5"
+            path: /media/torrent/vr
+        mountPath: /videos
+    resources:
+      requests:
+        cpu: 100m
+        memory: 250Mi
+      limits:
+        memory: 6000Mi
