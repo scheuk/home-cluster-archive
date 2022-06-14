@@ -19,8 +19,8 @@ spec:
     createNamespace: true
   values:
     image:
-      repository: xbapps/xbvr
-      tag: 0.3.17
+      repository: ghcr.io/xbapps/xbvr
+      tag: 0.3.23
     env:
       TZ: "${TIMEZONE}"
     settings:
