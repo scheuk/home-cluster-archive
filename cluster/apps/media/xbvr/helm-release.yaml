@@ -65,9 +65,9 @@ spec:
             server: "192.168.1.5"
             path: /media/torrent/vr
         mountPath: /videos
-    resources:
-      requests:
-        cpu: 100m
-        memory: 250Mi
-      limits:
-        memory: 6000Mi
+    # resources:
+    #   requests:
+    #     cpu: 100m
+    #     memory: 250Mi
+    #   limits:
+    #     memory: 6000Mi
