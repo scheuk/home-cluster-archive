@@ -51,7 +51,7 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: "qb-tls"
+            secretName: "xbvr-tls"
     persistence:
       config:
         enabled: true
