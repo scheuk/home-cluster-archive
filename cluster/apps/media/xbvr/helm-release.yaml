@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: ghcr.io/xbapps/xbvr
-      tag: 0.3.26
+      tag: 0.3.27
     env:
       TZ: "${TIMEZONE}"
     settings:
