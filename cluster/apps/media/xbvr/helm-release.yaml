@@ -18,7 +18,7 @@ spec:
   install:
     createNamespace: true
   values:
-    hostNetwork: true
+    # hostNetwork: true
     image:
       repository: ghcr.io/xbapps/xbvr
       tag: 0.3.27
