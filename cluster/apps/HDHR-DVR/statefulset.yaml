@@ -45,7 +45,7 @@ spec:
       labels:
         app: hdhr-dvr
     spec:
-      hostNetwork: true
+      # hostNetwork: true
       containers:
         - name: hdhr-dvr
           image: demonrik/hdhrdvr-docker
