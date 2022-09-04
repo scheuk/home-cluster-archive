@@ -18,10 +18,10 @@ spec:
   install:
     createNamespace: true
   values:
-    # hostNetwork: true
+    hostNetwork: true
     image:
-      repository: ghcr.io/xbapps/xbvr
-      tag: 0.3.27
+      repository: ghcr.io/scheuk/xbvr
+      tag: 0.3.27-next-amd64
     env:
       TZ: "${TIMEZONE}"
     settings:
