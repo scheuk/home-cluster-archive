@@ -21,7 +21,7 @@ spec:
     hostNetwork: true
     image:
       repository: ghcr.io/scheuk/xbvr
-      tag: 0.3.28-next-amd64
+      tag: 0.3.29-next-amd64
       pullPolicy: Always
     env:
       TZ: "${TIMEZONE}"
