@@ -2,46 +2,48 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: qbittorrent
+  name: &app qbittorrent
   namespace: media
 spec:
-  interval: 5m
+  interval: 15m
   chart:
     spec:
-      chart: qbittorrent
-      version: 13.5.2
+      chart: app-template
+      version: 1.2.0
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home-charts
+        name: bjw-s-charts
         namespace: flux-system
-      interval: 5m
   install:
     createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
   values:
     image:
-      repository: ghcr.io/k8s-at-home/qbittorrent
-      tag: v4.4.2
+      repository: ghcr.io/onedr0p/qbittorrent
+      tag: 4.4.5@sha256:6765f8a7709ad446fb761d3dde16f2a2706d118c21e2f191955ba07935e75e29
     env:
       TZ: "${TIMEZONE}"
-    settings:
-      automaticPortSetup: false
+      QBITTORRENT__PORT: &port 80
+      QBITTORRENT__BT_PORT: &port-bt 50413
     service:
       main:
         ports:
           http:
-            port: 8080
+            port: *port
       bittorrent:
         enabled: true
         type: LoadBalancer
-        # loadBalancerIP: 192.168.70.106
-        externalIPs:
-          - "${SVC_QBITTORRENT_ADDR}"
+        externalIPs: ["${SVC_QBITTORRENT_ADDR}"]
         ports:
           bittorrent:
             enabled: true
-            port: 50413
+            port: *port-bt
             protocol: TCP
-            targetPort: 50413
+            targetPort: *port-bt
         externalTrafficPolicy: Local
     ingress:
       main:
@@ -77,6 +79,10 @@ spec:
     #   prometheusRule:
     #     enabled: true
     podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
       supplementalGroups:
         - 100
     persistence:
@@ -85,23 +91,19 @@ spec:
         existingClaim: qbittorrent-config-v1
       downloads:
         enabled: true
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "192.168.1.5"
-            path: /media/torrent
+        type: nfs
+        server: "192.168.1.5"
+        path: /media/torrent
         mountPath: /downloads
       media:
         enabled: false
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "192.168.1.5"
-            path: /media/downloads
+        type: nfs
+        server: "192.168.1.5"
+        path: /media/downloads
         mountPath: /media
     resources:
       requests:
-        cpu: 100m
+        cpu: 10m
         memory: 250Mi
       limits:
         memory: 6000Mi
