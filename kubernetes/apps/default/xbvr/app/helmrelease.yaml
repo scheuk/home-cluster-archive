@@ -28,7 +28,7 @@ spec:
   values:
     controller:
       type: statefulset
-      annotataions:
+      annotations:
         k8s.v1.cni.cncf.io/networks: '[
             { "name": "home-network",
               "ips": [ "192.168.1.25/24" ],
