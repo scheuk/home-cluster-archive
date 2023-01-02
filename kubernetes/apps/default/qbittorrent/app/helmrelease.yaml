@@ -1,9 +1,10 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: &app qbittorrent
-  namespace: media
+  name: qbittorrent
+  namespace: default
 spec:
   interval: 15m
   chart:
@@ -12,22 +13,28 @@ spec:
       version: 1.2.0
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: bjw-s
         namespace: flux-system
+  maxHistory: 3
   install:
     createNamespace: true
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
+    cleanupOnFail: true
     remediation:
-      retries: 5
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
+    controller:
+      type: statefulset
     image:
       repository: ghcr.io/onedr0p/qbittorrent
       tag: 4.5.0@sha256:26fa8645757f9d7e5ab72620d75fd8752c968c6b8810b8935ce770d7d1303fe9
     env:
       TZ: "${TIMEZONE}"
-      QBITTORRENT__PORT: &port 8080
+      QBITTORRENT__PORT: &port 80
       QBITTORRENT__BT_PORT: &port-bt 50413
     service:
       main:
@@ -48,16 +55,16 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "traefik"
+        ingressClassName: nginx
         annotations:
-          cert-manager.io/cluster-issuer: "letsencrypt-production"
-        #   nginx.ingress.kubernetes.io/configuration-snippet: |
-        #     proxy_hide_header "x-webkit-csp";
-        #     proxy_hide_header "content-security-policy";
-        #     proxy_hide_header "X-Frame-Options";
-        #     proxy_set_header Accept-Encoding "";
-        #     sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_PUBLIC_DOMAIN}/css/base/qbittorrent/nord.css"></head>';
-        #     sub_filter_once on;
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_hide_header "x-webkit-csp";
+            proxy_hide_header "content-security-policy";
+            proxy_hide_header "X-Frame-Options";
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.devbu.io/css/base/qbittorrent/nord.css"></head>';
+            sub_filter_once on;
+          hajimari.io/icon: mdi:download
         hosts:
           - host: &host "qb.${SECRET_DOMAIN}"
             paths:
@@ -66,18 +73,6 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: "qb-tls"
-    # metrics:
-    #   enabled: true
-    #   exporter:
-    #     image:
-    #       repository: ghcr.io/k8s-at-home/prometheus-qbittorrent-exporter
-    #       tag: v1.2.0
-    #   serviceMonitor:
-    #     interval: 1m
-    #     scrapeTimeout: 10s
-    #   prometheusRule:
-    #     enabled: true
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568
@@ -85,10 +80,15 @@ spec:
       fsGroupChangePolicy: "OnRootMismatch"
       supplementalGroups:
         - 100
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: "${NFS_STORAGECLASS_NAME}"
+        labels:
+          snapshot.home.arpa/enabled: "true"
     persistence:
-      config:
-        enabled: true
-        existingClaim: qbittorrent-config-v1
       downloads:
         enabled: true
         type: nfs
@@ -101,6 +101,11 @@ spec:
         server: "192.168.1.5"
         path: /media/downloads
         mountPath: /media
+      incomplete:
+        enabled: true
+        type: emptyDir
+    nodeSelector:
+      node-role.kubernetes.io/worker: "true"
     resources:
       requests:
         cpu: 10m
