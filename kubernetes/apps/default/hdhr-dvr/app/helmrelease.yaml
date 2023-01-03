@@ -64,7 +64,7 @@ spec:
         volumeSpec:
           nfs:
             server: "192.168.1.5"
-            path: /media/hdhrdvr/dvrdata
+            path: /hdhrdvr/dvrdata
         mountPath: /dvrdata
       dvrrec:
         enabled: true
@@ -72,7 +72,7 @@ spec:
         volumeSpec:
           nfs:
             server: "192.168.1.5"
-            path: /media/hdhrdvr/dvrrec
+            path: /hdhrdvr/dvrrec
         mountPath: /dvrrec
     # resources:
     #   requests:
