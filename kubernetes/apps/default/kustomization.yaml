@@ -7,3 +7,4 @@ resources:
   - ./hajimari/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./xbvr/ks.yaml
+  - ./hdhr-dvr/ks.yaml
