@@ -10,6 +10,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-nfs-subdir-external-provisioner
+    - name: cluster-apps-multus-config
   path: ./kubernetes/apps/default/xbvr/app
   prune: true
   sourceRef:
