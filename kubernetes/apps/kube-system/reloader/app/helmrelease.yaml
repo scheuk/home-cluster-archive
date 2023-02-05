@@ -14,21 +14,21 @@ spec:
         kind: HelmRepository
         name: stakater
         namespace: flux-system
+  maxHistory: 3
   install:
     createNamespace: true
     remediation:
       retries: 3
   upgrade:
+    cleanupOnFail: true
     remediation:
       retries: 3
+  uninstall:
+    keepHistory: false
   values:
     fullnameOverride: reloader
     reloader:
-      enableHA: true
-      deployment:
-        replicas: 1
       reloadStrategy: annotations
-      reloadOnCreate: false
       podMonitor:
-        enabled: false
+        enabled: true
         namespace: *namespace
