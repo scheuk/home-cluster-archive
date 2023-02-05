@@ -30,5 +30,5 @@ spec:
     reloader:
       reloadStrategy: annotations
       podMonitor:
-        enabled: true
+        enabled: false
         namespace: *namespace
