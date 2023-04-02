@@ -8,3 +8,4 @@ resources:
   - ./qbittorrent/ks.yaml
   - ./xbvr/ks.yaml
   - ./hdhr-dvr/ks.yaml
+  - ./plex/ks.yaml
