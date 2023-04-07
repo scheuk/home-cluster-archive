@@ -9,3 +9,4 @@ resources:
   - ./xbvr/ks.yaml
   - ./hdhr-dvr/ks.yaml
   - ./plex/ks.yaml
+  - ./sonarr/ks.yaml
