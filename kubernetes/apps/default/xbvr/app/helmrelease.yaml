@@ -36,7 +36,7 @@ spec:
           }]'
     image:
       repository: ghcr.io/xbapps/xbvr
-      tag: 0.4.8
+      tag: 0.4.9
       pullPolicy: Always
     env:
       TZ: "${TIMEZONE}"
