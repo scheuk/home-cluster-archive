@@ -5,7 +5,7 @@ metadata:
   name: weave-gitops
   namespace: flux-system
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: weave-gitops
@@ -14,7 +14,7 @@ spec:
         kind: HelmRepository
         name: weave-gitops
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     createNamespace: true
     remediation:
@@ -28,6 +28,7 @@ spec:
   values:
     adminUser:
       create: true
+      createSecret: false
       username: admin
     ingress:
       enabled: true
@@ -52,9 +53,4 @@ spec:
       create: true
       impersonationResourceNames: ["admin"]
     podAnnotations:
-      secret.reloader.stakater.com/reload: weave-gitops-secret
-  valuesFrom:
-    - kind: Secret
-      name: weave-gitops-secret
-      valuesKey: adminPassword
-      targetPath: adminUser.passwordHash
+      secret.reloader.stakater.com/reload: cluster-user-auth
