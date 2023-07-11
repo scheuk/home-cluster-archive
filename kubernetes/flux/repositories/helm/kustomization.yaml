@@ -19,4 +19,4 @@ resources:
   - ./stakater.yaml
   - ./weave-gitops.yaml
   - ./metallb.yaml
-  - ./nfs-subdir-external-provisioner
+  - ./nfs-subdir-external-provisioner.yaml
