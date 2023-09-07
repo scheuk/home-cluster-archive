@@ -40,11 +40,11 @@ spec:
       pullPolicy: Always
     probes:
       liveness:
-        enable: false
+        enabled: false
       readiness:
-        enable: false
+        enabled: false
       startup:
-        enable: false
+        enabled: false
     env:
       TZ: "${TIMEZONE}"
     service:
