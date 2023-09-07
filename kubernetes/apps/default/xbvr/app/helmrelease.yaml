@@ -38,6 +38,13 @@ spec:
       repository: ghcr.io/xbapps/xbvr
       tag: 0.4.12
       pullPolicy: Always
+    probes:
+      liveness:
+        enable: false
+      readiness:
+        enable: false
+      startup:
+        enable: false
     env:
       TZ: "${TIMEZONE}"
     service:
