@@ -36,7 +36,7 @@ spec:
           }]'
     image:
       repository: ghcr.io/xbapps/xbvr
-      tag: 0.4.13
+      tag: 0.4.14
       pullPolicy: Always
     probes:
       liveness:
