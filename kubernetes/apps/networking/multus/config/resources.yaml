@@ -11,8 +11,6 @@ spec:
     "master": "eth1",
     "ipam": {
       "type": "static",
-      "routes": [
-        { "dst": "0.0.0.0/0" }
-      ]
+      "routes": []
     }
   }'
